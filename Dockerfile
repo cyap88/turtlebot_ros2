@@ -1,16 +1,17 @@
+# use arm64 ros:humble as base image
 FROM arm64v8/ros:humble-ros-core
 
-# remove all ROS repo configurations
+# remove old ros repo configs and gpg keys to avoid conflicts
 RUN rm -f /etc/apt/sources.list.d/ros* \
   && rm -f /etc/apt/trusted.gpg.d/ros2-latest-archive-keyring.gpg \
   && apt-get clean
 
-# install curl using Ubuntu repos
+# install curl to install new ros key using Ubuntu repos
 RUN apt-get update -yq --allow-insecure-repositories \
   && apt-get install -y --allow-unauthenticated curl \
   && rm -rf /var/lib/apt/lists/*
 
-# add new ROS 2 GPG key and repo
+# add latest ros2 GPG key and repo
 RUN curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg \
   && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu jammy main" | tee /etc/apt/sources.list.d/ros2.list
 
@@ -27,11 +28,4 @@ RUN apt-get update && apt-get install -y \
 # configure environment
 ENV TURTLEBOT3_MODEL=burger
 ENV WEBOTS_HOME=/usr/local/webots
-ENV DISPLAY=host.docker.internal:0
-
-# docker run -it \
-#   --platform linux/arm64 \
-#   -e DISPLAY=host.docker.internal:0 \
-#   -v /tmp/.X11-unix:/tmp/.X11-unix \
-#   --name tb3-dev \
-#   tb3-arm
+ENV DISPLAY=host.docker.internal:0 
