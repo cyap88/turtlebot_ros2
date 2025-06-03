@@ -27,5 +27,5 @@ RUN apt-get update && apt-get install -y \
 
 # configure environment
 ENV TURTLEBOT3_MODEL=burger
-ENV WEBOTS_HOME=/usr/local/webots
-ENV DISPLAY=host.docker.internal:0 
+# ENV WEBOTS_HOME=/usr/local/webots
+# ENV DISPLAY=host.docker.internal:0 
